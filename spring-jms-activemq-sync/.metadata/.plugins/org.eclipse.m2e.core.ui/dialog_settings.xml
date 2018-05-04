@@ -2,6 +2,7 @@
 <section name="Workbench">
 	<section name="MavenProjectImportWizardPage">
 		<list key="rootDirectory">
+			<item value="C:\Projects\tutorials\spring-jms-activemq-sync"/>
 			<item value="C:\Projects\Tutorials\spring-jms-activemq-sync"/>
 		</list>
 		<list key="projectNameTemplate">

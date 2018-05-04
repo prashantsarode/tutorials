@@ -2,7 +2,7 @@ package com.sampleprograms.spring.jms.activemq;
 
 public class HelloWorld {
 
-	String name;
+	private String name;
 
 	public String getName() {
 		return name;
@@ -16,7 +16,5 @@ public class HelloWorld {
 	public String toString() {
 		return "Hello " + name + "!!!";
 	}
-	
-	
-	
+
 }
