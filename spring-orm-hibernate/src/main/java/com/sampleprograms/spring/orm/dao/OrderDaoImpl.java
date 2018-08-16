@@ -2,10 +2,15 @@ package com.sampleprograms.spring.orm.dao;
 
 import java.util.List;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sampleprograms.spring.orm.model.Order;
 
+@Service
 public class OrderDaoImpl implements OrderDao {
 	
 	private final SessionFactory sessionFactory;
@@ -15,29 +20,35 @@ public class OrderDaoImpl implements OrderDao {
 		this.sessionFactory = sessionFactory;
 	}
 
+	@Transactional
 	public void saveOrder(Order order) {
-		// TODO Auto-generated method stub
-		
+		getSession().persist(order);
 	}
 
+	@Transactional
 	public List<Order> findAllOrders() {
-		// TODO Auto-generated method stub
-		return null;
+		return ((List<Order>) getSession().createCriteria(Order.class).list());
 	}
 
+	@Transactional
 	public void deleteOrderByName(String name) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public Order findBySsn(String ssn) {
-		// TODO Auto-generated method stub
-		return null;
+	@Transactional
+	public Order findByName(String name) {
+		return (Order) getSession().createCriteria(Order.class).add(Restrictions.eq("name", name)).uniqueResult();
 	}
 
+	@Transactional
 	public void updateOrder(Order order) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	private Session getSession() {
+		return sessionFactory.getCurrentSession();
+	}
+	
 }

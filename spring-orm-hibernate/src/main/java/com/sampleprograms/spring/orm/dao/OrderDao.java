@@ -12,7 +12,7 @@ public interface OrderDao {
      
     void deleteOrderByName(String name);
      
-    Order findBySsn(String ssn);
+    Order findByName(String ssn);
      
     void updateOrder(Order order);
 
