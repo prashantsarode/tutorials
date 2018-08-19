@@ -1,10 +1,11 @@
 package com.sampleprograms.spring.restful.jaxrs.service;
 
-import java.math.BigDecimal;
+import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -20,15 +21,24 @@ public class PurchaseOrderService {
 		this.orderDao = orderDao;
 	}
 
-	@GET
-	@Path("/create/{name}")
+	@POST
+	@Path("/create")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public PurchaseOrder helloWorld(@PathParam("name") String name) {
+	public PurchaseOrderResponse helloWorld(PurchaseOrderRequest purchaseOrderRequest) {
 		PurchaseOrder order = new PurchaseOrder();
-		order.setName(name);
-		order.setTotalCost(new BigDecimal(100));
+		order.setName(purchaseOrderRequest.getName());
+		order.setTotalCost(purchaseOrderRequest.getTotalCost());
 		orderDao.savePurchaseOrder(order);
-		return order;
+		PurchaseOrderResponse purchaseOrderResponse = new PurchaseOrderResponse();
+		purchaseOrderResponse.setOrderId(order.getOrderId());
+		return purchaseOrderResponse;
 	}
 	
+	@GET
+	@Path("/GetAllPOs")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<PurchaseOrder> getAllPOs() {
+		return orderDao.findAllOrders();
+	}
 }
