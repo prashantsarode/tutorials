@@ -10,25 +10,26 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="Order")
-public class Order {
+@Table(name="Purchase_Order")
+public class PurchaseOrder {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+	@Column(name = "order_id")
+	private int orderId;
 	
-	@Column(name = "name")
+	@Column(name = "order_name")
 	private String name;
 	
 	@Column(name = "totalCost")
 	private BigDecimal totalCost;
 
-	public int getId() {
-		return id;
+	public int getOrderId() {
+		return orderId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setOrderId(int id) {
+		this.orderId = id;
 	}
 
 	public String getName() {
@@ -51,7 +52,7 @@ public class Order {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + id;
+		result = prime * result + orderId;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((totalCost == null) ? 0 : totalCost.hashCode());
 		return result;
@@ -65,8 +66,8 @@ public class Order {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Order other = (Order) obj;
-		if (id != other.id)
+		PurchaseOrder other = (PurchaseOrder) obj;
+		if (orderId != other.orderId)
 			return false;
 		if (name == null) {
 			if (other.name != null)

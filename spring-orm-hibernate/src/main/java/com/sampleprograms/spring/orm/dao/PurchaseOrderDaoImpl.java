@@ -8,26 +8,26 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sampleprograms.spring.orm.model.Order;
+import com.sampleprograms.spring.orm.model.PurchaseOrder;
 
 @Service
-public class OrderDaoImpl implements OrderDao {
+public class PurchaseOrderDaoImpl implements PurchaseOrderDao {
 	
 	private final SessionFactory sessionFactory;
 
-	public OrderDaoImpl(SessionFactory sessionFactory) {
+	public PurchaseOrderDaoImpl(SessionFactory sessionFactory) {
 		super();
 		this.sessionFactory = sessionFactory;
 	}
 
 	@Transactional
-	public void saveOrder(Order order) {
-		getSession().persist(order);
+	public void savePurchaseOrder(PurchaseOrder order) {
+		getSession().save(order);
 	}
 
 	@Transactional
-	public List<Order> findAllOrders() {
-		return ((List<Order>) getSession().createCriteria(Order.class).list());
+	public List<PurchaseOrder> findAllOrders() {
+		return ((List<PurchaseOrder>) getSession().createCriteria(PurchaseOrder.class).list());
 	}
 
 	@Transactional
@@ -37,12 +37,12 @@ public class OrderDaoImpl implements OrderDao {
 	}
 
 	@Transactional
-	public Order findByName(String name) {
-		return (Order) getSession().createCriteria(Order.class).add(Restrictions.eq("name", name)).uniqueResult();
+	public PurchaseOrder findByName(String name) {
+		return (PurchaseOrder) getSession().createCriteria(PurchaseOrder.class).add(Restrictions.eq("name", name)).uniqueResult();
 	}
 
 	@Transactional
-	public void updateOrder(Order order) {
+	public void updateOrder(PurchaseOrder order) {
 		// TODO Auto-generated method stub
 		
 	}
