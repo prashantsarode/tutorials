@@ -30,9 +30,15 @@ public class UserDaoService {
 		return user;
 	}
 
-	public User fineUser(Integer userId) {
+	public User findUserById(Integer userId) {
 		Optional<User> optionalUser = users.stream().filter(user -> user.getId() == userId).findFirst();
 		return optionalUser.isPresent() ? optionalUser.get() : null;
+	}
+
+	public User deleteUserById(int userId) {
+		User user = this.findUserById(userId);
+		users.remove(user);
+		return user;
 	}
 
 }

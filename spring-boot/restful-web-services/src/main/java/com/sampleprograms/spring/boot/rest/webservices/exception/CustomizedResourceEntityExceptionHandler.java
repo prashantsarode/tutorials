@@ -4,8 +4,10 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 import java.util.Date;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +43,12 @@ public class CustomizedResourceEntityExceptionHandler extends ResponseEntityExce
 	
 	public ResponseEntity<Object> handleUserAlreadyExistException(UserAlreadyExistsException exception, WebRequest webRequest) {
 		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), exception.getMessage(), webRequest.getDescription(false));
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
+	}
+	
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(
+			MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest webRequest) {
+		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), "Validation Failed", ex.getBindingResult().getFieldError().getDefaultMessage());
 		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
 }
