@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.sampleprograms.spring.boot.rest.webservices.user.UserAlreadyExistsException;
-import com.sampleprograms.spring.boot.rest.webservices.user.UserBusinessException;
-import com.sampleprograms.spring.boot.rest.webservices.user.UserNotFoundException;
+import com.sampleprograms.spring.boot.rest.webservices.user.exceptions.UserAlreadyExistsException;
+import com.sampleprograms.spring.boot.rest.webservices.user.exceptions.UserBusinessException;
+import com.sampleprograms.spring.boot.rest.webservices.user.exceptions.UserNotFoundException;
 
 @ControllerAdvice
 @RestController

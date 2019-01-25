@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.sampleprograms.spring.boot.rest.webservices.user.exceptions.UserAlreadyExistsException;
+import com.sampleprograms.spring.boot.rest.webservices.user.exceptions.UserNotFoundException;
 
 @RestController
 public class UserResource {
@@ -26,12 +31,17 @@ public class UserResource {
 	}
 
 	@GetMapping("/users/{userId}")
-	public User retrieveUser(@PathVariable Integer userId) {
+	public Resource<User> retrieveUser(@PathVariable Integer userId) {
 		User user = userDaoService.findUserById(userId.intValue());
 		if (user == null) {
 			throw new UserNotFoundException("id : " + userId);
 		}
-		return userDaoService.findUserById(userId.intValue());
+		
+		//HATEOAS
+		Resource<User> userResource = new Resource<>(user);
+		ControllerLinkBuilder linkTo = ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(this.getClass()).getAllUsers());
+		userResource.add(linkTo.withRel("all-users"));
+		return userResource;
 	}
 
 	@DeleteMapping("/users/{userId}")

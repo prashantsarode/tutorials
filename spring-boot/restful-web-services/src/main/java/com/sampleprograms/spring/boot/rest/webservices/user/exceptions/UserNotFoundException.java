@@ -1,4 +1,4 @@
-package com.sampleprograms.spring.boot.rest.webservices.user;
+package com.sampleprograms.spring.boot.rest.webservices.user.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
