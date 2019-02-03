@@ -34,5 +34,7 @@ public class SwaggerConfig {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(DEFAULT_API_INFO).produces(SUPPORTED_MEDIA_TYPES)
 				.consumes(SUPPORTED_MEDIA_TYPES);
 	}
+	
+	//TODO : How to do documentation involving Dynamic and Static Filters
 
 }

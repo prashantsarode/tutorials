@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.sampleprograms.spring.boot.rest.webservices.user.exceptions.UserAlreadyExistsException;
 import com.sampleprograms.spring.boot.rest.webservices.user.exceptions.UserNotFoundException;
 
@@ -24,10 +26,19 @@ public class UserResource {
 
 	@Autowired
 	private UserDaoService userDaoService;
+	
+	@Autowired
+	private FilterProvider ssnFilter;
 
 	@GetMapping("/users")
-	public List<User> getAllUsers() {
-		return userDaoService.findAll();
+	public MappingJacksonValue getAllUsers() {
+
+		List<User> users = userDaoService.findAll();
+
+		MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(users);
+		mappingJacksonValue.setFilters(ssnFilter);
+
+		return mappingJacksonValue;
 	}
 
 	@GetMapping("/users/{userId}")
@@ -36,10 +47,11 @@ public class UserResource {
 		if (user == null) {
 			throw new UserNotFoundException("id : " + userId);
 		}
-		
-		//HATEOAS
+
+		// HATEOAS
 		Resource<User> userResource = new Resource<>(user);
-		ControllerLinkBuilder linkTo = ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(this.getClass()).getAllUsers());
+		ControllerLinkBuilder linkTo = ControllerLinkBuilder
+				.linkTo(ControllerLinkBuilder.methodOn(this.getClass()).getAllUsers());
 		userResource.add(linkTo.withRel("all-users"));
 		return userResource;
 	}
