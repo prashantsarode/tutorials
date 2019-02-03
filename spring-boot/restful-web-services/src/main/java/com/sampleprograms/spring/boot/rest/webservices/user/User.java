@@ -6,15 +6,22 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel(description = "This is the model class for Entity User")
 public class User {
 
+	@ApiModelProperty(notes = "Indicates primary unique identifier for User")
 	private Integer id;
 
 	@NotEmpty(message = "Name should not be empty")
+	@ApiModelProperty(notes = "Indicates user name. Name should not be empty")
 	private String name;
 
 	@PastOrPresent(message = "Birth Date cannot be in future")
 	@NotNull(message = "Birth Date should not be empty")
+	@ApiModelProperty(notes = "Indicates user Birthdate. Birthday should not be in the past")
 	private Date birthDate;
 
 	public User() {
