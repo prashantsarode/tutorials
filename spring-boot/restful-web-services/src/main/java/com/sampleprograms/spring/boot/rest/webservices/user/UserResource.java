@@ -20,6 +20,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.sampleprograms.spring.boot.rest.webservices.user.exceptions.UserAlreadyExistsException;
 import com.sampleprograms.spring.boot.rest.webservices.user.exceptions.UserNotFoundException;
+import com.sampleprograms.spring.boot.rest.webservices.user.post.Post;
+import com.sampleprograms.spring.boot.rest.webservices.user.post.PostRepository;
 
 @RestController
 public class UserResource {
@@ -28,8 +30,11 @@ public class UserResource {
 	private UserDaoService userDaoService;
 	
 	@Autowired
+	private PostRepository postRepository;
+	
+	@Autowired
 	private FilterProvider ssnFilter;
-
+	
 	@GetMapping("/users")
 	public MappingJacksonValue getAllUsers() {
 
@@ -42,26 +47,37 @@ public class UserResource {
 	}
 
 	@GetMapping("/users/{userId}")
-	public Resource<User> retrieveUser(@PathVariable Integer userId) {
-		User user = userDaoService.findUserById(userId.intValue());
-		if (user == null) {
-			throw new UserNotFoundException("id : " + userId);
-		}
+	public MappingJacksonValue retrieveUser(@PathVariable Integer userId) {
+		User user = findUser(userId);
 
 		// HATEOAS
 		Resource<User> userResource = new Resource<>(user);
-		ControllerLinkBuilder linkTo = ControllerLinkBuilder
+		ControllerLinkBuilder allUsersLink = ControllerLinkBuilder
 				.linkTo(ControllerLinkBuilder.methodOn(this.getClass()).getAllUsers());
-		userResource.add(linkTo.withRel("all-users"));
-		return userResource;
+		userResource.add(allUsersLink.withRel("all-users"));
+		
+		ControllerLinkBuilder postLink = ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(this.getClass()).getPostForUser(userId));
+		userResource.add(postLink.withRel("get-user-post"));
+		
+		MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(userResource);
+		mappingJacksonValue.setFilters(ssnFilter);
+		
+		
+		return mappingJacksonValue;
+	}
+
+	private User findUser(Integer userId) {
+		User user = userDaoService.findUserById(userId);
+		if (user == null) {
+			throw new UserNotFoundException("id : " + userId);
+		}
+		return user;
 	}
 
 	@DeleteMapping("/users/{userId}")
 	public void deleteUser(@PathVariable Integer userId) {
-		User user = userDaoService.deleteUserById(userId.intValue());
-		if (user == null) {
-			throw new UserNotFoundException("id : " + userId);
-		}
+		User user = findUser(userId);
+		userDaoService.deleteUser(user);
 	}
 
 	@PostMapping("/users")
@@ -84,4 +100,26 @@ public class UserResource {
 			throw new UserAlreadyExistsException("User Already Exists for id : " + id);
 		}
 	}
+	
+	@GetMapping("/users/{userId}/post")
+	public List<Post> getPostForUser(@PathVariable int userId) {
+		User user = findUser(userId);
+		return user.getPosts();
+	}
+	
+	@PostMapping("/users/{userId}/post")
+	public ResponseEntity<Object> createUserPost(@PathVariable int userId, @Valid @RequestBody Post post ) {
+		User user = findUser(userId);
+		
+		post.setUser(user);
+		postRepository.save(post);
+		
+		// In order to send 201 response to successful request,
+		// ResponseEntity needs to be used
+		// ServletUriComponentBuilder is used to send custom response URI
+		// to be shared with client
+		return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{userId}")
+				.buildAndExpand((userDaoService.save(user)).getId()).toUri()).build();
+	}
+	
 }
