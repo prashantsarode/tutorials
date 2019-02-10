@@ -32,22 +32,23 @@ public class UserResource {
 	@Autowired
 	private PostRepository postRepository;
 	
-	@Autowired
-	private FilterProvider ssnFilter;
+//	@Autowired
+//	private FilterProvider ssnFilter;
 	
 	@GetMapping("/users")
-	public MappingJacksonValue getAllUsers() {
+	public List<User> getAllUsers() {
 
 		List<User> users = userDaoService.findAll();
 
-		MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(users);
-		mappingJacksonValue.setFilters(ssnFilter);
+//		MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(users);
+//		mappingJacksonValue.setFilters(ssnFilter);
 
-		return mappingJacksonValue;
+		return users;
 	}
 
 	@GetMapping("/users/{userId}")
-	public MappingJacksonValue retrieveUser(@PathVariable Integer userId) {
+	public Resource<User> retrieveUser(@PathVariable Integer userId) {
+		System.out.println("User Id :" + userId);
 		User user = findUser(userId);
 
 		// HATEOAS
@@ -59,11 +60,11 @@ public class UserResource {
 		ControllerLinkBuilder postLink = ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(this.getClass()).getPostForUser(userId));
 		userResource.add(postLink.withRel("get-user-post"));
 		
-		MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(userResource);
-		mappingJacksonValue.setFilters(ssnFilter);
+//		MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(userResource);
+//		mappingJacksonValue.setFilters(ssnFilter);
 		
 		
-		return mappingJacksonValue;
+		return userResource;
 	}
 
 	private User findUser(Integer userId) {
