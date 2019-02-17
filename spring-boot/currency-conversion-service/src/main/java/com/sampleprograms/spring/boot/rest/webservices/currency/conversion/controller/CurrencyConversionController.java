@@ -2,6 +2,8 @@ package com.sampleprograms.spring.boot.rest.webservices.currency.conversion.cont
 
 import java.math.BigDecimal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +15,8 @@ import com.sampleprograms.spring.boot.rest.webservices.currency.conversion.domai
 @RestController
 public class CurrencyConversionController {
 
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private CurrencyExchangeServiceProxy currencyExchangeServiceProxy;
 	
@@ -33,6 +37,8 @@ public class CurrencyConversionController {
 		
 		currencyConversion.setAmount(amount);
 		currencyConversion.setConvertedAmount(currencyConversion.getAmount().multiply(currencyConversion.getConversionFactor()));
+		
+		LOGGER.info("{}", currencyConversion);
 		
 		return currencyConversion;
 	}
